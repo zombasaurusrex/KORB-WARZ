@@ -1,0 +1,132 @@
+
+
+/**
+  * ~*~ korb warz ~*~
+  *
+  * Game by Seth Holton
+  *
+  * ~~~ Controls ~~~
+  * ** Player One **s
+  * w ----------- fly up
+  * s ----------- fly down
+  * a ----------- flyw left
+  * d ----------- fly right
+  * r ----------- fire weapon
+  * y ----------- pray
+  *
+  * ** Player Two **
+  * up arrow ---- fly up
+  * down arrow -- fly down
+  * left arrow -- fly left
+  * right arrow - fly right
+  * / ----------- fire weapon
+  * , ----------- pray
+  *
+**/
+
+TitleScreen ts = new TitleScreen();
+ShipGame ng = new ShipGame();
+int page;
+
+void setup() {
+  size(800, 800);
+  frameRate(60);
+  
+  ts.init(width, height);
+  ng.init(width, height);
+  page = 1;
+}
+
+
+
+void draw() {
+  background(0);
+  if (page == 1) {
+    
+  }
+  if (page == 2) {
+    ng.drawShipGame();
+  }
+}
+
+
+
+
+void keyPressed() {
+  // Player One Controls
+  if (key == 'w') {
+    ng.p1ThrustOn('u');
+  }
+  if (key == 's') {
+    ng.p1ThrustOn('d');
+  }
+  if (key == 'a') {
+    ng.p1ThrustOn('l');
+  }
+  if (key == 'd') {
+    ng.p1ThrustOn('r');
+  }
+  if (key == 'r') {
+    ng.p1Shoot();
+  }
+  
+  // Player Two Controls
+  if (keyCode == 38) {
+    ng.p2ThrustOn('u');
+  }
+  if (keyCode == 40) {
+    ng.p2ThrustOn('d');
+  }
+  if (keyCode == 37) {
+    ng.p2ThrustOn('l');
+  }
+  if (keyCode == 39) {
+    ng.p2ThrustOn('r');
+  }
+  if (keyCode == 47) {
+    ng.p2Shoot();
+  }
+  //println(keyCode);
+}
+
+
+
+void keyReleased() {
+  // Player One Controls
+  if (!ng.player1.dead) {
+    if (key == 'w') {
+      ng.p1ThrustOff('u');
+    }
+    if (key == 's') {
+      ng.p1ThrustOff('d');
+    }
+    if (key == 'a') {
+      ng.p1ThrustOff('l');
+    }
+    if (key == 'd') {
+      ng.p1ThrustOff('r');
+    }
+    if (key == 'r') {
+      ng.p1StopShoot();
+    }
+  }
+  
+  // Player Two Controls
+  if (!ng.player2.dead) {
+    if (keyCode == 38) {
+      ng.p2ThrustOff('u');
+    }
+    if (keyCode == 40) {
+      ng.p2ThrustOff('d');
+    }
+    if (keyCode == 37) {
+      ng.p2ThrustOff('l');
+    }
+    if (keyCode == 39) {
+      ng.p2ThrustOff('r');
+    }
+    if (keyCode == 47) {
+      ng.p2StopShoot();
+    }
+  }
+}

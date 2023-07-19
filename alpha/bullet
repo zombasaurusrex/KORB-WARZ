@@ -1,0 +1,48 @@
+
+
+class Bullet
+{
+  // members
+  float speed;
+  float x, y;
+  float w, h;
+  float bulletW, bulletH;
+  
+  
+  
+  
+  
+  // constructor
+  Bullet(float startX, float startY, char dir) {
+    w = width;
+    h = height;
+    bulletW = w / 40;
+    bulletH = h / 80;
+    x = startX;
+    y = startY;
+    if (dir == 'r') {
+      speed = w / 70;
+    }
+    if (dir == 'l') {
+      speed = w / -70;
+    }
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawBullet() {
+    rectMode(CENTER);
+    noStroke();
+    fill(245, 206, 66);
+    moveBullet();
+    rect(x, y, bulletW, bulletH);
+    //println(bulletW, bulletH);
+  }
+  
+  void moveBullet() {
+    x += speed;
+  }
+}

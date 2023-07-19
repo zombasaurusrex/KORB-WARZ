@@ -1,0 +1,275 @@
+
+
+class Ship
+{
+  // members
+  PVector speed;
+  float maxS;
+  float a;
+  float d;
+  float x, y;
+  float w, h;
+  float bX1, bX2, bY1, bY2;
+  float shipW, shipH;
+  boolean thrustU, thrustD, thrustL, thrustR;
+  int lives;
+  boolean dying, dead;
+  int t;
+  
+  
+  
+  
+  
+  // constructor
+  Ship() {
+    w = width;
+    h = height;
+    speed = new PVector();
+    speed.x = 0;
+    speed.y = 0;
+    lives = 3;
+    t = 0;
+    
+    dying = false;
+    dead = false;
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawShip() {
+    if (!dead) {
+      rectMode(CENTER);
+      noStroke();
+      fill(100, 100, 100);
+      moveShip();
+      rect(x, y, shipW, shipH);
+    }
+    if (dying) {
+        explode();
+    }
+  }
+  
+  
+  
+  void moveShip() {
+    x += speed.x;
+    y += speed.y;
+    
+    x = bound(x, bX1, bX2);
+    y = bound(y, bY1, bY2);
+    border();
+    thrust();
+    slow();
+  }
+  
+  
+  
+  // damage
+  void hit() {
+    lives--;
+    if (lives <= 0) {
+      dying = true;
+    }
+  }
+  
+  
+  
+  void explode() {
+    die();
+    noStroke();
+    for (int i = 0; i < 160; i++) {
+      t++;
+    }
+    
+    fill(245, 206, 66, 255 - (t / 6));
+    circle(x, y, t / 4);
+    
+    //if (t >= 160) {
+    //  dying = false;
+    //}
+  }
+  
+  
+  
+  void die() {
+    dead = true;
+  }
+  
+  
+  
+  boolean inHitBox(float objX, float objY, float objW, float objH) {
+    boolean isHit = false;
+    
+    float lSideO = objX - (objW / 2);
+    float rSideO = objX + (objW / 2);
+    float tSideO = objY - (objH / 2);
+    float bSideO = objY + (objH / 2);
+    
+    float lSideS = x - (shipW / 2);
+    float rSideS = x + (shipW / 2);
+    float tSideS = y - (shipH / 2);
+    float bSideS = y + (shipH / 2);
+    
+    if ((rSideO >= lSideS && rSideO < rSideS) || (lSideO <= rSideS && lSideO > lSideS)) {
+      if (tSideO <= bSideS && tSideO > tSideS) {
+        isHit = true;
+      } else if (bSideO >= tSideS && bSideO < bSideS) {
+        isHit = true;
+      } else {
+        isHit = false;
+      }
+    }
+    return isHit;
+  }
+  
+  
+  
+  // movement
+  void thrust() {
+    if (!dead) {
+      if (thrustU && speed.y > -maxS) {
+        speed.y -= a;
+      }
+      if (thrustD && speed.y < maxS) {
+        speed.y += a;
+      }
+      if (thrustL && speed.x > -maxS) {
+        speed.x -= a;
+      }
+      if (thrustR && speed.x < maxS) {
+        speed.x += a;
+      }
+    }
+  }
+  
+  
+  
+  void thrustOn(char dir) {
+    if (dir == 'u') {
+      thrustU = true;
+      thrustD = false;
+    } else if (dir == 'd') {
+      thrustD = true;
+      thrustU = false;
+    } else if (dir == 'l') {
+      thrustL = true;
+      thrustR = false;
+    } else if (dir == 'r') {
+      thrustR = true;
+      thrustL = false;
+    }
+  }
+  
+  
+  
+  void thrustOff(char dir) {
+    if (dir == 'u') {
+      thrustU = false;
+    } else if (dir == 'd') {
+      thrustD = false;
+    } else if (dir == 'l') {
+      thrustL = false;
+    } else if (dir == 'r') {
+      thrustR = false;
+    }
+  }
+  
+  
+  
+  void slow() {
+    if (!thrustU && !thrustD && speed.y > 0) {
+      speed.y -= d;
+      if (speed.y - d < 0) {
+        speed.y = 0;
+      }
+    }
+    if (!thrustU && !thrustD && speed.y < 0) {
+      speed.y += d;
+      if (speed.y + d > 0) {
+        speed.y = 0;
+      }
+    }
+    if (!thrustL && !thrustR && speed.x > 0) {
+      speed.x -= d;
+      if (speed.x - d < 0) {
+        speed.x = 0;
+      }
+    }
+    if (!thrustL && !thrustR && speed.x < 0) {
+      speed.x += d;
+      if (speed.x + d > 0) {
+        speed.x = 0;
+      }
+    }
+  }
+  
+  
+  
+  // setup
+  void init(float windowWidth, float windowHeight, float posX, float posY) {
+    w = windowWidth;
+    h = windowHeight;
+    x = posX;
+    y = posY;
+    maxS = w / 140;
+    a = w / 800;
+    d = w / 8000;
+    
+    shipW = w / 20;
+    shipH = h / 20;
+  }
+  
+  
+  
+  void setBorder(float borderTop, float borderBottom, float borderLeft, float borderRight) {
+    bX1 = borderLeft + (shipW / 2);
+    bX2 = borderRight - (shipW / 2);
+    bY1 = borderTop + (shipH / 2);
+    bY2 = borderBottom - (shipH / 2);
+  }
+  
+  
+  
+  // layout
+  void border() {
+    if (x <= bX1) {
+      speed.x *= -1;
+      if (speed.x > -a && thrustL) {
+        x = bX1;
+      }
+    } else if (x >= bX2) {
+      speed.x *= -1;
+      if (speed.x < a && thrustR) {
+        x = bX2;
+      }
+    } else if (y <= bY1) {
+      speed.y *= -1;
+      if (speed.y > -a && thrustU) {
+        y = bY1;
+      }
+    } else if (y >= bY2) {
+      speed.y *= -1;
+      if (speed.y < a && thrustD) {
+        y = bY2;
+      }
+    }
+  }
+  
+  
+  
+  float bound(float inCoord, float min, float max) {
+    float outCoord;
+    if (inCoord < min) {
+      outCoord = min;
+    } else if (inCoord > max) {
+      outCoord = max;
+    } else {
+      return inCoord;
+    }
+    
+    return outCoord;
+  }
+}

@@ -1,0 +1,31 @@
+
+
+class TitleScreen
+{
+  // members
+  float w, h;
+  
+  
+  
+  
+  
+  // constructor
+  TitleScreen() {
+    w = width;
+    h = height;
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawTitleScreen() {
+    noStroke();
+  }
+  
+  void init(int windowWidth, int windowHeight) {
+    w = windowWidth;
+    h = windowHeight;
+  }
+}

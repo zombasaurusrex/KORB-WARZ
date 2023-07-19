@@ -1,0 +1,47 @@
+
+
+class Button
+{
+  // members
+  float x, y;
+  float buttonW, buttonH;
+  boolean isSelected, isPressed;
+  String label;
+  
+  
+  
+  
+  
+  // constructor
+  Button(float buttonX, float buttonY, float bW, float bH, String buttonLabel, boolean isStartingButton) {
+    x = buttonX;
+    y = buttonY;
+    buttonW = bW;
+    buttonH = bH;
+    
+    if (isStartingButton) {
+      isSelected = true;
+    } else {
+      isSelected = false;
+    }
+    
+    isPressed = false;
+    
+    label = buttonLabel;
+  }
+  
+  
+  
+  
+  
+  // methods
+  //void drawButton() {
+  //  rectMode(CENTER);
+  //  noStroke();
+  //  fill(252, 3, 61);
+  //  rect(x, y, buttonW, buttonH);
+  //  fill(255);
+  //  textSize(128);
+  //  text(label, 
+  //}
+}

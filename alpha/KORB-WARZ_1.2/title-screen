@@ -1,0 +1,104 @@
+
+
+class TitleScreen
+{
+  // members
+  float w, h;
+  
+  Button startB = new Button("Start", 1, 1);
+  Button controlsB = new Button("Controls", 1, 2);
+  
+  boolean[] buttons = {true, true};
+  
+  
+  
+  
+  
+  
+  // constructor
+  TitleScreen() {
+    w = width;
+    h = height;
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawTitleScreen() {
+    noStroke();
+    textSize(w / 5);
+    text("Korb Warz", w / 15, h / 3);
+    
+    findSelected();
+    
+    startB.drawButton();
+    controlsB.drawButton();
+    
+    startB.label();
+    controlsB.label();
+  }
+  
+  void press() {
+    if (startB.isSelected) {
+      startB.isPressed = true;
+    } else if (controlsB.isSelected) {
+      controlsB.isPressed = true;
+    }
+  }
+  
+  boolean canGoUp(int mCol) {
+    if (mCol > 0 && buttons[mCol - 1]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  boolean canGoDown(int mCol) {
+    if (mCol < buttons.length - 1 && buttons[mCol + 1]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  void deselect() {
+    if (startB.isPrevSelected) {
+      startB.isSelected = false;
+    }
+    if (controlsB.isPrevSelected) {
+      controlsB.isSelected = false;
+    }
+  }
+  
+  void findSelected() {
+    if (startB.checkLoc(1, col)) {
+      deselect();
+      startB.isSelected = true;
+      startB.isPrevSelected = true;
+    } else if (controlsB.checkLoc(1, col)) {
+      deselect();
+      controlsB.isSelected = true;
+      controlsB.isPrevSelected = true;
+    }
+  }
+  
+  void init() {
+    w = width;
+    h = height;
+    
+    startB.init(w / 2, h / 2, w / 8, h / 27);
+    
+    controlsB.init(w / 2, h / 1.8, w / 8, h / 27);
+  }
+  
+  void reset() {
+    w = width;
+    h = height;
+    
+    startB.reset();
+    controlsB.reset();
+  }
+}

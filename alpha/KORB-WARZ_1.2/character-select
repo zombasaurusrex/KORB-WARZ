@@ -1,0 +1,167 @@
+
+
+class CharacterSelect
+{
+  // members
+  float w, h;
+  
+  float row1, row2, row3, row4, row5;
+  float col1, col2;
+  
+  Button judeB = new Button("Jude", 1, 1);
+  Button korbinB = new Button("Korbin", 1, 2);
+  Button sethB = new Button("Seth", 2, 1);
+  Button micahB = new Button("Micah", 2, 2);
+  Button wyattB = new Button("Wyatt", 3, 1);
+  Button seanB = new Button("Sean", 3, 2);
+  Button rickyB = new Button("Ricky", 4, 1);
+  Button jibrilB = new Button("Jibril", 4, 2);
+  Button luisB = new Button("Luis", 5, 1);
+  Button minkB = new Button("Mink", 5, 2);
+  
+  boolean[][] buttons = {
+    {true, true},
+    {true, true},
+    {true, true},
+    {true, true},
+    {true, true},
+  };
+  
+  
+  
+  
+  
+  // constructor
+  CharacterSelect() {
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawCharacterSelect() {
+    noStroke();
+    textSize(w / 15);
+    text("Choose Your Fighter!", w / 5, h / 15);
+    
+    findSelected();
+  }
+  
+  void findSelected() {
+    if (judeB.checkLoc(row, col)) {
+      deselect();
+      startB.isSelected = true;
+      startB.isPrevSelected = true;
+    } else if (controlsB.checkLoc(1, col)) {
+      deselect();
+      controlsB.isSelected = true;
+      controlsB.isPrevSelected = true;
+    }
+  }
+  
+  void deselect() {
+    if (startB.isPrevSelected) {
+      startB.isSelected = false;
+    }
+    if (controlsB.isPrevSelected) {
+      controlsB.isSelected = false;
+    }
+  }
+  
+  void press() {
+    if (judeB.isSelected) {
+      judeB.isPressed = true;
+    } else if (korbinB.isSelected) {
+      korbinB.isPressed = true;
+    } else if (sethB.isSelected) {
+      sethB.isPressed = true;
+    } else if (micahB.isSelected) {
+      micahB.isPressed = true;
+    } else if (wyattB.isSelected) {
+      wyattB.isPressed = true;
+    } else if (seanB.isSelected) {
+      seanB.isPressed = true;
+    } else if (rickyB.isSelected) {
+      rickyB.isPressed = true;
+    } else if (jibrilB.isSelected) {
+      jibrilB.isPressed = true;
+    } else if (luisB.isSelected) {
+      luisB.isPressed = true;
+    } else if (minkB.isSelected) {
+      minkB.isPressed = true;
+    }
+  }
+  
+  boolean canGoUp(int mRow, int mCol) {
+    if (mCol > 0 && buttons[mRow - 1][mCol - 1]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  boolean canGoDown(int mRow, int mCol) {
+    if (mCol < buttons[mRow - 1].length - 1 && buttons[mRow - 1][mCol + 1]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  boolean canGoLeft(int mRow, int mCol) {
+    if (mRow > 0 && buttons[mRow - 1][mCol - 1]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  boolean canGoRight(int mRow, int mCol) {
+    if (mRow < buttons[mCol - 1].length - 1 && buttons[mRow + 1][mCol - 1]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  
+  
+  void init() {
+    w = width;
+    h = height;
+    
+    row1 = h / 6;
+    row2 = h / 3;
+    row3 = h / 2;
+    row4 = h / 1.48;
+    row5 = h / 1.166;
+    
+    col1 = w / 3;
+    col2 = w / 1.5;
+    
+    judeB.init(col1, row1, w / 8, h / 27);
+    korbinB.init(col2, row1, w / 8, h / 27);
+    sethB.init(col1, row2, w / 8, h / 27);
+    micahB.init(col2, row2, w / 8, h / 27);
+    wyattB.init(col1, row3, w / 8, h / 27);
+    seanB.init(col2, row3, w / 8, h / 27);
+    rickyB.init(col1, row4, w / 8, h / 27);
+    jibrilB.init(col2, row4, w / 8, h / 27);
+    luisB.init(col1, row5, w / 8, h / 27);
+    minkB.init(col2, row5, w / 8, h / 27);
+  }
+  
+  void reset() {
+    judeB.reset();
+    korbinB.reset();
+    sethB.reset();
+    micahB.reset();
+    wyattB.reset();
+    seanB.reset();
+    rickyB.reset();
+    jibrilB.reset();
+    luisB.reset();
+    minkB.reset();
+  }
+}

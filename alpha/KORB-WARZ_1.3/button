@@ -1,0 +1,71 @@
+
+
+class Button
+{
+  // members
+  float x, y;
+  float bW, bH;
+  int row, col;
+  boolean isSelected, isPrevSelected, isPressed;
+  String label;
+  
+  
+  
+  
+  
+  // constructor
+  Button(int bRow, int bCol) {
+    row = bRow;
+    col = bCol;
+  }
+  
+  Button(String name, int bRow, int bCol) {
+    label = name;
+    row = bRow;
+    col = bCol;
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawButton() {
+    rectMode(CENTER);
+    noStroke();
+    if (isSelected) {
+      fill(252, 3, 61);
+      textSize(bH);
+      rect(x, y, bW, bH);
+    }
+  }
+  
+  void init(float buttonX, float buttonY, float buttonW, float buttonH) {
+    x = buttonX;
+    y = buttonY;
+    bW = buttonW;
+    bH = buttonH;
+    
+    isPressed = false;
+  }
+  
+  void label() {
+    fill(255);
+    textSize(bH);
+    text(label, x - (bW / 2), y);
+  }
+  
+  boolean checkLoc(int inRow, int inCol) {
+    if (inRow == row && inCol == col) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  void reset() {
+    isSelected = false;
+    isPressed = false;
+    isPrevSelected = false;
+  }
+}

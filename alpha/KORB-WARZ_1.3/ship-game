@@ -1,0 +1,182 @@
+
+
+class ShipGame
+{
+  // members
+  int cooldown;
+  int prevMillis, prevMillisP1, prevMillisP2;
+  float w, h;
+  boolean p1Shooting, p2Shooting;
+  
+  boolean gameStart;
+  boolean timer;
+  int timerNumber;
+  
+  Ship player1 = new Ship();
+  Ship player2 = new Ship();
+  ArrayList <Bullet> bullets = new ArrayList<Bullet>();
+  
+  boolean gameOver;
+  
+  
+  
+  
+  
+  // constructor
+  ShipGame() {
+    cooldown = 500;
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawShipGame() {
+    if (!gameOver) {
+      if (timer) {
+        if ((millis() - prevMillis) / 1000 < 3) {
+          timerNumber = 3 - ((millis() - prevMillis) / 1000);
+          fill(255);
+          textSize(w / 4.2);
+          text(timerNumber, w / 2.23, h / 3);
+        } else if ((millis() - prevMillis) / 1000 >= 3) {
+          timer = false;
+          gameStart = true;
+          player1.playing = true;
+          player2.playing = true;
+        }
+      }
+      
+      player1.drawShip();
+      player2.drawShip();
+      if (gameStart) {
+        shoot();
+        drawBullets();
+      }
+      
+      if (player1.dead || player2.dead) {
+        gameOver = true;
+      }
+    }
+    if (gameOver) {
+      player1.drawShip();
+      player2.drawShip();
+      
+      player1.playing = false;
+      player2.playing = false;
+      
+      noStroke();
+      fill(255);
+      textSize(w / 15);
+      text("Evan Sucx! ahahahhahaahahahahhahahahhahaahhahahhahahahhahahahah", w / 3, h / 3);
+    }
+      
+    //println(p1Shooting, p2Shooting);
+    //println(player2.x, player2.y);
+  }  
+  
+  void start() {
+    prevMillis = millis();
+    timer = true;
+  }
+  
+  void shoot() {
+    if (p1Shooting && !player1.dead && gameStart) {
+      if (millis() - prevMillisP1 >= cooldown) {
+        bullets.add(new Bullet(player1.x + player1.shipW / 1.5, player1.y, 'r'));
+        prevMillisP1 = millis();
+      }
+    }
+    
+    if (p2Shooting && !player2.dead) {
+      if (millis() - prevMillisP2 >= cooldown) {
+        bullets.add(new Bullet(player2.x - player2.shipW / 1.5, player2.y, 'l'));
+        prevMillisP2 = millis();
+      }
+    }
+  }
+  
+  
+  
+  void p1Shoot() {
+    p1Shooting = true;
+  }
+  
+  void p1StopShoot() {
+    p1Shooting = false;
+  }
+  
+  void p2Shoot() {
+    p2Shooting = true;
+  }
+  
+  void p2StopShoot() {
+    p2Shooting = false;
+  }
+  
+  
+  
+  void drawBullets() {
+    for (int i = 0; i < bullets.size(); i++) {
+      bullets.get(i).drawBullet();
+        
+      float bx = bullets.get(i).x;
+      float by = bullets.get(i).y;
+      float bw = bullets.get(i).bulletW;
+      float bh = bullets.get(i).bulletH;
+      
+      if (bx + (bw / 2) < 0 || bx - (bw / 2) > w) {
+        bullets.remove(i);
+        i = 0;
+      }
+      if (player1.inHitBox(bx, by, bw, bh) && !player1.dead) {
+        bullets.remove(i);
+        i = 0;
+        
+        player1.hit();
+      }
+      
+      if (player2.inHitBox(bx, by, bw, bh) && !player2.dead) {
+        bullets.remove(i);
+        i = 0;
+        
+        player2.hit();
+      }
+    }
+  }
+  
+  void init() {
+    w = width; 
+    h = height;
+    initP1();
+    initP2();
+    gameOver = false;
+  }
+  
+  void initP1() {
+    player1.init(w, h, w / 4, h / 2);
+    player1.setBorder(0, h, 0, w / 2);
+  }
+  
+  void initP2() {
+    player2.init(w, h, w * 3 / 4, h / 2);
+    player2.setBorder(0, h, w / 2, w);
+  }
+  
+  void p1ThrustOn(int dir) {
+    player1.thrustOn(dir);
+  }
+  
+  void p1ThrustOff(int dir) {
+    player1.thrustOff(dir);
+  }
+  
+  void p2ThrustOn(int dir) {
+    player2.thrustOn(dir);
+  }
+  
+  void p2ThrustOff(int dir) {
+    player2.thrustOff(dir);
+  }
+}

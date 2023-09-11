@@ -1,0 +1,97 @@
+
+
+class ControlsScreen
+{
+  // members
+  float w, h;
+  float indent;
+  float col1, col2, col3;
+  
+  Button backB = new Button("Back", 1, 1);
+  
+  
+  
+  
+  
+  // constructor
+  ControlsScreen() {
+    backB.isSelected = true;
+    backB.isPressed = false;
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawControlsScreen() {
+    displayControls();
+    
+    backB.drawButton();
+    backB.label();
+  }
+  
+  void select() {
+    
+  }
+  
+  
+  
+  float row(int rowNumber) {
+    return (h / 5 + indent * rowNumber);
+  }
+  
+  void displayControls() {
+    noStroke();
+    textSize(w / 12);
+    fill(255);
+    text("Controls", w / 2.8, h / 10);
+    
+    textSize(w / 30);
+    text("Function:", col1, h / 5);
+    text("P1:", col2, h / 5);
+    text("P2:", col3, h / 5);
+    
+    textSize(w / 40);
+    text("Fly Up", col1, row(1));
+    text("W", col2, row(1));
+    text("Up Arrow", col3, row(1));
+    
+    text("Fly Down", col1, row(2));
+    text("S", col2, row(2));
+    text("Down Arrow", col3 , row(2));
+    
+    text("Fly Left", col1, row(3));
+    text("A", col2, row(3));
+    text("Left Arrow", col3 , row(3));
+    
+    text("Fly Right", col1, row(4));
+    text("D", col2, row(4));
+    text("Right Arrow", col3, row(4));
+    
+    text("Fire", col1, row(5));
+    text("R", col2, row(5));
+    text("/", col3, row(5));
+    
+    text("Pray", col1, row(6));
+    text("T", col2, row(6));
+    text(".", col3, row(6));
+  }
+  
+  void init() {
+    w = width;
+    h = height;
+    
+    indent = h / 12;
+    col1 = w / 4;
+    col2 = w / 1.8;
+    col3 = w / 1.5;
+    
+    backB.init(w / 2, h / 1.2, w / 8, h / 27);
+  }
+  
+  void reset() {
+    backB.isSelected = true;
+    backB.isPressed = false;
+  }
+}

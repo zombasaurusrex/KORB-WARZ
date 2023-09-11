@@ -1,0 +1,310 @@
+// PImage;
+
+/**
+  * ~*~ korb warz ~*~
+  *
+  * Game by Seth Holton
+  *
+  * ~~~ Controls ~~~
+  * ** Player One **
+  * w ----------- fly up
+  * s ----------- fly down
+  * a ----------- fly left
+  * d ----------- fly right
+  * r ----------- fire
+  * t ----------- pray
+  *
+  * ** Player Two **
+  * up arrow ---- fly up
+  * down arrow -- fly down
+  * left arrow -- fly left
+  * right arrow - fly right
+  * / ----------- fire
+  * , ----------- pray
+  *
+**/
+
+byte page;
+boolean pageReady;
+
+TitleScreen ts = new TitleScreen();
+ShipGame ng = new ShipGame();
+ControlsScreen cs = new ControlsScreen();
+CharacterSelect css = new CharacterSelect();
+
+byte row1, col1;
+
+byte row2, col2;
+
+
+
+
+
+void setup() {
+  size(800, 800);
+  frameRate(60);
+  
+  ts.init();
+  ng.init();
+  cs.init();
+  css.init();
+  
+  page = 1;
+  pageReady = true;
+  
+  row1 = 1;
+  col1 = 1;
+  
+  row2 = 1;
+  col2 = 1;
+}
+
+
+
+void draw() {
+  background(0);
+  if (page == 1) {
+    ts.drawTitleScreen();
+  }
+  if (page == 2) {
+    ng.drawShipGame();
+  }
+  if (page == 3) {
+    cs.drawControlsScreen();
+  }
+  if (page == 4) {
+    css.drawCharacterSelect();
+  }
+  
+  //println("Row 1: ", row1);
+  //println("Col 1: ", col1);
+  //println("Row 2: ", row2);
+  //println("Col 2: ", col2);
+}
+
+
+
+void keyPressed() {
+  
+  // TITLE SCREEN // TITLE SCREEN //
+  
+  if (page == 1 && pageReady) {
+    if (key == 'r') {
+      ts.press();
+      if (ts.startB.isPressed) {
+        reset();
+        
+        page = 4;
+        pageReady = false;
+      }
+      if (ts.controlsB.isPressed) {
+        reset();
+        
+        page = 3;
+        pageReady = false;
+      }
+    }
+    if (key == 'w') {
+      if (ts.canGoUp(row1 - 1)) {
+        row1--;
+      }
+    }
+    if (key == 's') {
+      if (ts.canGoDown(row1 - 1)) {
+        row1++;
+      }
+    }
+  }
+  
+  // GAME SCREEN // GAME SCREEN //
+  
+  if (page == 2 && pageReady) {
+    // Player One Controls
+    if (key == 'w') {
+      ng.p1ThrustOn(1);
+    }
+    if (key == 's') {
+      ng.p1ThrustOn(2);
+    }
+    if (key == 'a') {
+      ng.p1ThrustOn(3);
+    }
+    if (key == 'd') {
+      ng.p1ThrustOn(4);
+    }
+    if (key == 'r') {
+      ng.p1Shoot();
+    }
+    
+    // Player Two Controls
+    if (keyCode == 38) {
+      ng.p2ThrustOn(1);
+    }
+    if (keyCode == 40) {
+      ng.p2ThrustOn(2);
+    }
+    if (keyCode == 37) {
+      ng.p2ThrustOn(3);
+    }
+    if (keyCode == 39) {
+      ng.p2ThrustOn(4);
+    }
+    if (keyCode == 47) {
+      ng.p2Shoot();
+    }
+  }
+  
+  // CONTROLS SCREEN // CONTROLS SCREEN //
+  
+  if (page == 3 && pageReady) {
+    if (key == 'r') {
+      page = 1;
+    }
+  }
+  
+  // CHARACTER SELECT SCREEN // CHARACTER SELECT SCREEN //
+  
+  if (page == 4 && pageReady) {
+    
+    // Player One
+    if (key == 'w') {
+      if (css.checkDir(1, 1, row1 - 1, col1 - 1)) {
+        row1--;
+      }
+    }
+    if (key == 's') {
+      if (css.checkDir(1, 2, row1 - 1, col1 - 1)) {
+        row1++;
+      }
+    }
+    if (key == 'a') {
+      if (css.checkDir(1, 3, row1 - 1, col1 - 1)) {
+        col1--;
+      }
+    }
+    if (key == 'd') {
+      if (css.checkDir(1, 4, row1 - 1, col1 - 1)) {
+        col1++;
+      }
+    }
+    if (key == 'r') {
+      css.press(css.buttons1);
+    }
+    
+    // Player Two
+    if (keyCode == 38) {
+      if (css.checkDir(2, 1, row2 - 1, col2 - 1)) {
+        row2--;
+      }
+    }
+    if (keyCode == 40) {
+      if (css.checkDir(2, 2, row2 - 1, col2 - 1)) {
+        row2++;
+      }
+    }
+    if (keyCode == 37) {
+      if (css.checkDir(2, 3, row2 - 1, col2 - 1)) {
+        col2--;
+      }
+    }
+    if (keyCode == 39) {
+      if (css.checkDir(2, 4, row2 - 1, col2 - 1)) {
+        col2++;
+      }
+    }
+    if (keyCode == 47) {
+      css.press(css.buttons2);
+    }
+  }
+}
+
+
+
+void keyReleased() {
+  
+  // TITLE SCREEN // TITLE SCREEN //
+  
+  if (page == 1 && !pageReady) {
+    if (key == 'r') {
+      pageReady = true;
+      reset();
+    }
+  }
+  
+  // GAME SCREEN // GAME SCREEN //
+  
+  if (page == 2 && !pageReady) {
+    if (key == 'r') {
+      pageReady = true;
+      reset();
+    }
+  } else if (page == 2 && pageReady) {
+    // Player One Controls
+    if (!ng.player1.dead) {
+      if (key == 'w') {
+        ng.p1ThrustOff(1);
+      }
+      if (key == 's') {
+        ng.p1ThrustOff(2);
+      }
+      if (key == 'a') {
+        ng.p1ThrustOff(3);
+      }
+      if (key == 'd') {
+        ng.p1ThrustOff(4);
+      }
+      if (key == 'r') {
+        ng.p1StopShoot();
+      }
+    }
+    
+    // Player Two Controls
+    if (!ng.player2.dead && pageReady) {
+      if (keyCode == 38) {
+        ng.p2ThrustOff(1);
+      }
+      if (keyCode == 40) {
+        ng.p2ThrustOff(2);
+      }
+      if (keyCode == 37) {
+        ng.p2ThrustOff(3);
+      }
+      if (keyCode == 39) {
+        ng.p2ThrustOff(4);
+      }
+      if (keyCode == 47) {
+        ng.p2StopShoot();
+      }
+    }
+  }
+  
+  // CONTROLS SCREEN // CONTROLS SCREEN //
+  
+  if (page == 3 && !pageReady) {
+    if (key == 'r') {
+      pageReady = true;
+      reset();
+    }
+  }
+  
+  // CHARACTER SELECT SCREEN // CHARACTER SELECT SCREEN //
+  
+  if (page == 4 && !pageReady) {
+    if (key == 'r') {
+      pageReady = true;
+      reset();
+    }
+  }
+}
+
+
+void reset() {
+  ts.reset();
+  cs.reset();
+  css.reset();
+  row1 = 1;
+  col1 = 1;
+  
+  row2 = 1;
+  col2 = 1;
+}

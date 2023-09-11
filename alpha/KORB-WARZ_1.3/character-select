@@ -1,0 +1,222 @@
+
+
+class CharacterSelect
+{
+  // members
+  float w, h;
+  
+  float aRow1, aRow2, aRow3, aRow4, aRow5;
+  float aCol1, aCol2;
+  float aCol3, aCol4;
+  
+  float bW, bH;
+  
+  ArrayList <Button> buttons1 = new ArrayList<Button>();
+  
+  ArrayList <Button> buttons2 = new ArrayList<Button>();
+  
+  int[][] buttonMatrix1 = {
+    {0, 1},
+    {2, 3},
+    {4, 5},
+    {6, 7},
+    {8, 9}
+  };
+  
+  int[][] buttonMatrix2 = {
+    {0, 1},
+    {2, 3},
+    {4, 5},
+    {6, 7},
+    {8, 9}
+  };
+  
+  
+  
+  
+  
+  // constructor
+  CharacterSelect() {
+  }
+  
+  
+  
+  
+  
+  // methods
+  void drawCharacterSelect() {
+    noStroke();
+    textSize(w / 15);
+    text("Choose Your Fighters!", w / 5.5, h / 15);
+    
+    findSelected();
+    
+    for (int i = 0; i < buttons1.size(); i++) {
+      buttons1.get(i).drawButton();
+    }
+    for (int i = 0; i < buttons1.size(); i++) {
+      buttons1.get(i).label();
+    }
+    
+    for (int i = 0; i < buttons2.size(); i++) {
+      buttons2.get(i).drawButton();
+    }
+    for (int i = 0; i < buttons2.size(); i++) {
+      buttons2.get(i).label();
+    }
+  }
+  
+  
+  
+  void findSelected() {
+    for (int i = 0; i < buttons1.size(); i++) {
+      if (buttons1.get(i).checkLoc(row1, col1)) {
+        deselect(buttons1);
+        buttons1.get(i).isSelected = true;
+        buttons1.get(i).isPrevSelected = true;
+      }
+    }
+    
+    for (int i = 0; i <buttons2.size(); i++) {
+      if (buttons2.get(i).checkLoc(row2, col2)) {
+        deselect(buttons2);
+        buttons2.get(i).isSelected = true;
+        buttons2.get(i).isPrevSelected = true;
+      }
+    }
+  }
+  
+  void deselect(ArrayList<Button> list) {
+    for (int i = 0; i < list.size(); i++) {
+      if (list.get(i).isPrevSelected) {
+        list.get(i).isSelected = false;
+        list.get(i).isPrevSelected = false;
+      }
+    }
+  }
+  
+  void press(ArrayList<Button> list) {
+    for (int i = 0; i < list.size(); i++) {
+      if (list.get(i).isSelected) {
+        list.get(i).isPressed = true;
+      }
+    }
+  }
+  
+  boolean checkDir(int p, int dir, int mRow, int mCol) {
+    int [][] list;
+    if (p == 1) {
+      list = buttonMatrix1;
+    } else if (p == 2) {
+      list = buttonMatrix2;
+    } else {
+      list = buttonMatrix1;
+    }
+    
+    
+    
+    if (dir == 1) {
+      if (mRow > 0 && list[mRow - 1][mCol] != 100) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (dir == 2) {
+      if (mRow < buttonMatrix1.length - 1 && buttonMatrix1[mRow + 1][mCol] != 100) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (dir == 3) {
+      if (mCol > 0 && buttonMatrix1[mRow][mCol - 1] != 100) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (dir == 4) {
+      if (mCol < buttonMatrix1[mCol].length - 1 && buttonMatrix1[mRow][mCol + 1] != 100) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  
+  
+  
+  void init() {
+    w = width;
+    h = height;
+    
+    aRow1 = h / 6;
+    aRow2 = h / 3;
+    aRow3 = h / 2;
+    aRow4 = h / 1.48;
+    aRow5 = h / 1.166;
+    
+    aCol1 = w / 6;
+    aCol2 = w / 3;
+    
+    aCol3 = w / 1.5;
+    aCol4 = w / 1.2;
+   
+    bW = w / 8;
+    bH = h / 27;
+    
+    buttonInit();
+  }
+  
+    void buttonInit() {
+    buttons1.add(new Button("Jude", 1, 1));
+    buttons1.add(new Button("Korbin", 1, 2));
+    buttons1.add(new Button("Seth", 2, 1));
+    buttons1.add(new Button("Micah", 2, 2));
+    buttons1.add(new Button("Wyatt", 3, 1));
+    buttons1.add(new Button("Sean", 3, 2));
+    buttons1.add(new Button("Ricky", 4, 1));
+    buttons1.add(new Button("Jibril", 4, 2));
+    buttons1.add(new Button("Luis", 5, 1));
+    buttons1.add(new Button("Mink", 5, 2));
+    
+    buttons1.get(0).init(aCol1, aRow1, bW, bH);
+    buttons1.get(1).init(aCol2, aRow1, bW, bH);
+    buttons1.get(2).init(aCol1, aRow2, bW, bH);
+    buttons1.get(3).init(aCol2, aRow2, bW, bH);
+    buttons1.get(4).init(aCol1, aRow3, bW, bH);
+    buttons1.get(5).init(aCol2, aRow3, bW, bH);
+    buttons1.get(6).init(aCol1, aRow4, bW, bH);
+    buttons1.get(7).init(aCol2, aRow4, bW, bH);
+    buttons1.get(8).init(aCol1, aRow5, bW, bH);
+    buttons1.get(9).init(aCol2, aRow5, bW, bH);
+    
+    buttons2.add(new Button("Jude", 1, 1));
+    buttons2.add(new Button("Korbin", 1, 2));
+    buttons2.add(new Button("Seth", 2, 1));
+    buttons2.add(new Button("Micah", 2, 2));
+    buttons2.add(new Button("Wyatt", 3, 1));
+    buttons2.add(new Button("Sean", 3, 2));
+    buttons2.add(new Button("Ricky", 4, 1));
+    buttons2.add(new Button("Jibril", 4, 2));
+    buttons2.add(new Button("Luis", 5, 1));
+    buttons2.add(new Button("Mink", 5, 2));
+    
+    buttons2.get(0).init(aCol3, aRow1, bW, bH);
+    buttons2.get(1).init(aCol4, aRow1, bW, bH);
+    buttons2.get(2).init(aCol3, aRow2, bW, bH);
+    buttons2.get(3).init(aCol4, aRow2, bW, bH);
+    buttons2.get(4).init(aCol3, aRow3, bW, bH);
+    buttons2.get(5).init(aCol4, aRow3, bW, bH);
+    buttons2.get(6).init(aCol3, aRow4, bW, bH);
+    buttons2.get(7).init(aCol4, aRow4, bW, bH);
+    buttons2.get(8).init(aCol3, aRow5, bW, bH);
+    buttons2.get(9).init(aCol4, aRow5, bW, bH);
+  }
+  
+  void reset() {
+    for (int i = 0; i < buttons1.size(); i++) {
+      buttons1.get(i).reset();
+    }
+  }
+}

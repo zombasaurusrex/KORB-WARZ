@@ -5,22 +5,37 @@ class CharacterSelect
   // members
   float w, h;
   
-  float aRow1, aRow2, aRow3, aRow4, aRow5;
+  float aRow1, aRow2, aRow3, aRow4, aRow5, aRow6;
   float aCol1, aCol2;
   float aCol3, aCol4;
   
   float bW, bH;
   
   ArrayList <Button> buttons1 = new ArrayList<Button>();
+  int selected1;
+  boolean pressed1;
+  boolean p1Ready;
+  int p1Skin;
+  boolean lock1;
   
   ArrayList <Button> buttons2 = new ArrayList<Button>();
+  int selected2;
+  boolean pressed2;
+  boolean p2Ready;
+  int p2Skin;
+  boolean lock2;
+  
+  boolean charsSelected;
+  
+  int prevMillis1, prevMillis2;
   
   int[][] buttonMatrix1 = {
     {0, 1},
     {2, 3},
     {4, 5},
     {6, 7},
-    {8, 9}
+    {8, 9},
+    {10, 10}
   };
   
   int[][] buttonMatrix2 = {
@@ -28,7 +43,24 @@ class CharacterSelect
     {2, 3},
     {4, 5},
     {6, 7},
-    {8, 9}
+    {8, 9},
+    {10, 10}
+  };
+  
+  color def = color(100);
+  color red = color(252, 3, 61);
+  color orange = color(255, 153, 51);
+  color aqua = color(18, 225, 147);
+  color green = color(51, 255, 51);
+  color pink = color(255, 51, 153);
+  color blue = color(51, 153, 255);
+  color purple = color(105, 84, 125);
+  color emerald = color(0, 155, 119);
+  color lemon = color(255,243,109);
+  color crimson = color(158, 27, 50);
+  
+  color[] skins = {  
+    def, red, orange, aqua, green, pink, blue, purple, emerald, lemon, crimson
   };
   
   
@@ -46,6 +78,7 @@ class CharacterSelect
   // methods
   void drawCharacterSelect() {
     noStroke();
+    fill(255);
     textSize(w / 15);
     text("Choose Your Fighters!", w / 5.5, h / 15);
     
@@ -64,6 +97,63 @@ class CharacterSelect
     for (int i = 0; i < buttons2.size(); i++) {
       buttons2.get(i).label();
     }
+    
+    drawColors();
+    
+    noStroke();
+    
+    if (selected1 < 10) {
+      fill(skins[selected1 + 1]);
+      rect(w / 4.4, h / 3.8, w / 8, h / 8);
+    }
+    
+    if (selected2 < 10) {
+      fill(skins[selected2 + 1]);
+      rect(w / 1.38, h / 3.8, w / 8, h / 8);
+    }
+    
+    fill(255);
+    textSize(w / 30);
+    if (selected1 < 10) {
+      text(buttons1.get(selected1).label, w / 4.4, h / 3);
+    }
+    
+    if (selected2 < 10) {
+      text(buttons2.get(selected2).label, w / 1.38, h / 3);
+    }
+    
+    if (p1Ready) {
+      readyUp(1);
+    }
+    if (p2Ready) {
+      readyUp(2);
+    }
+    if (p1Ready && p2Ready) {
+      lockInPrompt();
+    }
+    
+    if (lock1 && lock2) {
+      if (millis() - prevMillis2 < 1000) {
+        fill(255);
+        textSize(w / 40);
+        text(millis() - prevMillis2, w / 2.2, h / 2.4);
+      } else if (millis() - prevMillis2 >= 1000) {
+        charsSelected = true;
+      }
+    } else if (!lock1 || !lock2) {
+      prevMillis2 = millis();
+    }
+  }
+  
+  void lockInPrompt() {
+    
+    if (millis() - prevMillis1 < 500) {
+      fill(255);
+      textSize(w / 30);
+      text("Press and hold 't' and '.' to lock in!", w / 4, h / 2.5);
+    } else if (millis() - prevMillis1 >= 1000) {
+      prevMillis1 = millis();
+    }
   }
   
   
@@ -73,6 +163,8 @@ class CharacterSelect
       if (buttons1.get(i).checkLoc(row1, col1)) {
         deselect(buttons1);
         buttons1.get(i).isSelected = true;
+        selected1 = i;
+        println(selected1);
         buttons1.get(i).isPrevSelected = true;
       }
     }
@@ -81,6 +173,7 @@ class CharacterSelect
       if (buttons2.get(i).checkLoc(row2, col2)) {
         deselect(buttons2);
         buttons2.get(i).isSelected = true;
+        selected2 = i;
         buttons2.get(i).isPrevSelected = true;
       }
     }
@@ -95,11 +188,52 @@ class CharacterSelect
     }
   }
   
-  void press(ArrayList<Button> list) {
-    for (int i = 0; i < list.size(); i++) {
-      if (list.get(i).isSelected) {
-        list.get(i).isPressed = true;
+  void press(int p) {
+    if (p == 1 && !pressed1) {
+      for (int i = 0; i < buttons1.size(); i++) {
+        if (buttons1.get(i).isSelected) {
+          buttons1.get(i).isPressed = true;
+          if (i < 10) {
+            if (!p1Ready) {
+              p1Ready = true;
+              p1Skin = i + 1;
+            } else if (p1Ready) {
+              p1Ready = false;
+              p1Skin = 0;
+            }
+          }
+        }
       }
+      pressed1 = true;
+    }
+    if (p == 2 && !pressed2) {
+      for (int i = 0; i < buttons2.size(); i++) {
+        if (buttons2.get(i).isSelected) {
+          buttons2.get(i).isPressed = true;
+          if (i < 10) {
+            if (!p2Ready) {
+              p2Ready = true;
+              p2Skin = i + 1;
+            } else if (p2Ready) {
+              p2Ready = false;
+              p2Skin = 0;
+            }
+          }
+        }
+      }
+      pressed2 = true;
+    }
+  }
+  
+  void readyUp(int p) {
+    noStroke();
+    fill(255);
+    textSize(w / 30);
+    if (p == 1) {
+      text("P1 Ready!", w / 4.4, h / 3.8);
+    }
+    if (p == 2) {
+      text("P2 Ready!", w / 1.38, h / 3.8);
     }
   }
   
@@ -150,11 +284,12 @@ class CharacterSelect
     w = width;
     h = height;
     
-    aRow1 = h / 6;
-    aRow2 = h / 3;
-    aRow3 = h / 2;
-    aRow4 = h / 1.48;
+    aRow1 = h / 2;
+    aRow2 = h / 1.7;
+    aRow3 = h / 1.48;
+    aRow4 = h / 1.3;
     aRow5 = h / 1.166;
+    aRow6 = h / 1.1;
     
     aCol1 = w / 6;
     aCol2 = w / 3;
@@ -167,8 +302,8 @@ class CharacterSelect
     
     buttonInit();
   }
-  
-    void buttonInit() {
+   
+  void buttonInit() {
     buttons1.add(new Button("Jude", 1, 1));
     buttons1.add(new Button("Korbin", 1, 2));
     buttons1.add(new Button("Seth", 2, 1));
@@ -179,6 +314,7 @@ class CharacterSelect
     buttons1.add(new Button("Jibril", 4, 2));
     buttons1.add(new Button("Luis", 5, 1));
     buttons1.add(new Button("Mink", 5, 2));
+    buttons1.add(new Button("Back", 6, 1));
     
     buttons1.get(0).init(aCol1, aRow1, bW, bH);
     buttons1.get(1).init(aCol2, aRow1, bW, bH);
@@ -190,6 +326,7 @@ class CharacterSelect
     buttons1.get(7).init(aCol2, aRow4, bW, bH);
     buttons1.get(8).init(aCol1, aRow5, bW, bH);
     buttons1.get(9).init(aCol2, aRow5, bW, bH);
+    buttons1.get(10).init(w / 2, aRow6, bW, bH);
     
     buttons2.add(new Button("Jude", 1, 1));
     buttons2.add(new Button("Korbin", 1, 2));
@@ -201,6 +338,7 @@ class CharacterSelect
     buttons2.add(new Button("Jibril", 4, 2));
     buttons2.add(new Button("Luis", 5, 1));
     buttons2.add(new Button("Mink", 5, 2));
+    buttons2.add(new Button("Back", 6, 1));
     
     buttons2.get(0).init(aCol3, aRow1, bW, bH);
     buttons2.get(1).init(aCol4, aRow1, bW, bH);
@@ -212,11 +350,34 @@ class CharacterSelect
     buttons2.get(7).init(aCol4, aRow4, bW, bH);
     buttons2.get(8).init(aCol3, aRow5, bW, bH);
     buttons2.get(9).init(aCol4, aRow5, bW, bH);
+    buttons2.get(10).init(w / 2, aRow6, bW, bH);
+  }
+  
+  void drawColors() {
+    rectMode(CENTER);
+    stroke(0);
+    strokeWeight(w / 800);
+    for (int i = 0; i < skins.length - 1; i++) {
+      fill(skins[i + 1]);
+      rect(buttons1.get(i).x - w / 13, buttons1.get(i).y - h / 95, w / 60, h / 60);
+      rect(buttons2.get(i).x - w / 13, buttons2.get(i).y - h / 95, w / 60, h / 60);
+    }
   }
   
   void reset() {
     for (int i = 0; i < buttons1.size(); i++) {
       buttons1.get(i).reset();
     }
+    selected1 = 0;
+    selected2 = 0;
+    
+    p1Ready = false;
+    p2Ready = false;
+    
+    lock1 = false;
+    lock2 = false;
+    
+    pressed1 = false;
+    pressed2 = false;
   }
 }

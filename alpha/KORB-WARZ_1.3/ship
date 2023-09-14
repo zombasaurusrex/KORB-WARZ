@@ -16,18 +16,9 @@ class Ship
   boolean dying, dead;
   int t;
   boolean playing;
-  int skin;
-  
-  color red = color(255, 51, 51);
-  color orange = color(255, 153, 51);
-  color aqua = color(51, 255, 153);
-  color green = color(51, 255, 51);
-  color pink = color(255, 51, 153);
-  color blue = color(51, 153, 255);
-  
-  color[] skins = {  
-    red, orange, aqua, green, pink, blue
-  };
+  color skin;
+  boolean moving;
+  boolean unbound;
   
   
   
@@ -43,9 +34,9 @@ class Ship
     lives = 3;
     t = 0;
     
-    dying = false;
-    dead = false;
-    playing = false;
+    //dying = false;
+    //dead = false;
+    //playing = false;
   }
   
   
@@ -57,7 +48,7 @@ class Ship
     if (!dead) {
       rectMode(CENTER);
       noStroke();
-      fill(100, 100, 100);
+      fill(skin);
       if (playing) {
         moveShip();
       }
@@ -66,6 +57,11 @@ class Ship
     if (dying) {
         explode();
     }
+    if (speed.x == 0 && speed.y == 0) {
+      moving = false;
+    } else {
+      moving = true;
+    }
   }
   
   
@@ -73,10 +69,12 @@ class Ship
   void moveShip() {
     x += speed.x;
     y += speed.y;
-    
-    x = bound(x, bX1, bX2);
-    y = bound(y, bY1, bY2);
-    border();
+    if (!unbound) {
+      //println(unbound);
+      x = bound(x, bX1, bX2);
+      y = bound(y, bY1, bY2);
+      border();
+    }
     thrust();
     slow();
   }
@@ -164,16 +162,16 @@ class Ship
   
   
   void thrustOn(int dir) {
-    if (dir == '1') {
+    if (dir == 1) {
       thrustU = true;
       thrustD = false;
-    } else if (dir == '2') {
+    } else if (dir == 2) {
       thrustD = true;
       thrustU = false;
-    } else if (dir == '3') {
+    } else if (dir == 3) {
       thrustL = true;
       thrustR = false;
-    } else if (dir == '4') {
+    } else if (dir == 4) {
       thrustR = true;
       thrustL = false;
     }
@@ -182,13 +180,13 @@ class Ship
   
   
   void thrustOff(int dir) {
-    if (dir == '1') {
+    if (dir == 1) {
       thrustU = false;
-    } else if (dir == '2') {
+    } else if (dir == 2) {
       thrustD = false;
-    } else if (dir == '3') {
+    } else if (dir == 3) {
       thrustL = false;
-    } else if (dir == '4') {
+    } else if (dir == 4) {
       thrustR = false;
     }
   }
@@ -245,12 +243,6 @@ class Ship
     bX2 = borderRight - (shipW / 2);
     bY1 = borderTop + (shipH / 2);
     bY2 = borderBottom - (shipH / 2);
-  }
-  
-  
-  
-  void setSkin(int skinNumber) {
-    
   }
   
   

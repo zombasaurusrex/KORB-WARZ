@@ -1,31 +1,28 @@
 
 
-class Bullet
+class Button
 {
   // members
-  float speed;
   float x, y;
-  float w, h;
-  float bulletW, bulletH;
+  float bW, bH;
+  int row, col;
+  boolean isSelected, isPrevSelected, isPressed;
+  String label;
   
   
   
   
   
   // constructor
-  Bullet(float startX, float startY, char dir) {
-    w = width;
-    h = height;
-    bulletW = w / 40;
-    bulletH = h / 80;
-    x = startX;
-    y = startY;
-    if (dir == 'r') {
-      speed = w / 70;
-    }
-    if (dir == 'l') {
-      speed = w / -70;
-    }
+  Button(int bRow, int bCol) {
+    row = bRow;
+    col = bCol;
+  }
+  
+  Button(String name, int bRow, int bCol) {
+    label = name;
+    row = bRow;
+    col = bCol;
   }
   
   
@@ -33,16 +30,42 @@ class Bullet
   
   
   // methods
-  void drawBullet() {
+  void drawButton() {
     rectMode(CENTER);
     noStroke();
-    fill(245, 206, 66);
-    moveBullet();
-    rect(x, y, bulletW, bulletH);
-    //println(bulletW, bulletH);
+    if (isSelected) {
+      fill(252, 3, 61);
+      textSize(bH);
+      rect(x, y, bW, bH);
+    }
   }
   
-  void moveBullet() {
-    x += speed;
+  void init(float buttonX, float buttonY, float buttonW, float buttonH) {
+    x = buttonX;
+    y = buttonY;
+    bW = buttonW;
+    bH = buttonH;
+    
+    isPressed = false;
+  }
+  
+  void label() {
+    fill(255);
+    textSize(bH);
+    text(label, x - (bW / 2), y);
+  }
+  
+  boolean checkLoc(int inRow, int inCol) {
+    if (inRow == row && inCol == col) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  void reset() {
+    isSelected = false;
+    isPressed = false;
+    isPrevSelected = false;
   }
 }

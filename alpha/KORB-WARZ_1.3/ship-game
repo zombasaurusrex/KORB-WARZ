@@ -4,33 +4,49 @@ class ShipGame
 {
   // members
   int cooldown;
-  int prevMillis, prevMillisP1, prevMillisP2;
+  int prevMillis, prevMillis2, prevMillis3, prevMillisP1, prevMillisP2;
   float w, h;
   boolean p1Shooting, p2Shooting;
   
+  float textY;
+
   boolean gameStart;
   boolean timer;
   int timerNumber;
-  
+
+  boolean timer2;
+
+  boolean timer3;
+
   Ship player1 = new Ship();
   Ship player2 = new Ship();
   ArrayList <Bullet> bullets = new ArrayList<Bullet>();
-  
+
+  boolean inMiddle;
+
+  boolean god;
+  boolean love;
   boolean gameOver;
-  
-  
-  
-  
-  
+
+  int ending;
+  int part;
+  boolean ended;
+
+
+
+
+
   // constructor
   ShipGame() {
     cooldown = 500;
+    part = 1;
+    textY = 0 - w / 80;
   }
-  
-  
-  
-  
-  
+
+
+
+
+
   // methods
   void drawShipGame() {
     if (!gameOver) {
@@ -47,40 +63,167 @@ class ShipGame
           player2.playing = true;
         }
       }
-      
+
       player1.drawShip();
       player2.drawShip();
       if (gameStart) {
         shoot();
         drawBullets();
       }
-      
+
       if (player1.dead || player2.dead) {
         gameOver = true;
+
+        if (!god) {
+          ending = 1;
+        } else {
+          ending = 2;
+        }
       }
     }
     if (gameOver) {
       player1.drawShip();
       player2.drawShip();
-      
-      player1.playing = false;
-      player2.playing = false;
-      
-      noStroke();
-      fill(255);
-      textSize(w / 15);
-      text("Evan Sucx! ahahahhahaahahahahhahahahhahaahhahahhahahahhahahahah", w / 3, h / 3);
+
+
+      if (!player1.moving && !player2.moving) {
+        player1.playing = false;
+        player2.playing = false;
+
+        if (millis() - prevMillis2 > 1000) {
+          end(ending);
+        }
+      }
     }
-      
-    //println(p1Shooting, p2Shooting);
-    //println(player2.x, player2.y);
-  }  
-  
+  }
+
   void start() {
     prevMillis = millis();
     timer = true;
   }
-  
+
+  void end(int endNum) {
+
+    // Cool Ending
+    if (endNum == 1) {
+      if (!timer) {
+        prevMillis2 = millis();
+        timer = true;
+      }
+      if (!inMiddle) {
+        if (player2.dead) {
+          player1.unbound = true;
+          if (player1.x < w / 2) {
+            player1.x += w / 500;
+          }
+          if (player1.y < h / 2) {
+            player1.y += h / 500;
+          } else if (player1.y > h / 2) {
+            player1.y -= h / 500;
+          }
+          if (player1.x > w / 2 - w / 500 && player1.x < w / 2 + w / 500) {
+            player1.x = w / 2;
+          }
+          if (player1.y > h / 2 - h / 500 && player1.y < h / 2 + h / 500) {
+            player1.y = h / 2;
+          }
+          if (player1.x == w / 2 && player1.y == h / 2) {
+            inMiddle = true;
+            prevMillis3 = millis();
+          }
+        } else if (player1.dead) {
+          player2.unbound = true;
+          if (player2.x > w / 2) {
+            player2.x -= w / 500;
+          }
+          if (player2.y < h / 2) {
+            player2.y += h / 500;
+          } else if (player2.y > h / 2) {
+            player2.y -= h / 500;
+          }
+          if (player2.x > w / 2 - w / 500 && player2.x < w / 2 + w / 500) {
+            player2.x = w / 2;
+          }
+          if (player2.y > h / 2 - h / 500 && player2.y < h / 2 + h / 500) {
+            player2.y = h / 2;
+          }
+          if (player2.x == w / 2 && player2.y == h / 2) {
+            inMiddle = true;
+            prevMillis3 = millis();
+          }
+        }
+      }
+      if (inMiddle && part == 1 && millis() - prevMillis3 > 2000) {
+        jumpscare();
+      }
+
+      if (part == 2) {
+        noStroke();
+        textSize(w / 20);
+        fill(255);
+        if (!ended) {
+          textY += 10;
+          if (textY >= w / 10) {
+            ended = true;
+          }
+        }
+        text("(COOL ENDING)", w / 2.9, textY);
+      }
+    }
+
+    // God Ending
+    if (endNum == 2) {
+    }
+
+    //
+    if (endNum == 3) {
+    }
+  }
+
+  void jumpscare() {
+    if (!timer3) {
+      prevMillis = millis();
+      timer3 = true;
+    }
+
+    int theta = (millis() - prevMillis) / 5;
+
+    if (theta < 255) {
+      noStroke();
+      textSize(w / 20);
+      fill(255, 255 - theta);
+      circle(w / 2, h / 2, w);
+      fill(0, 255 - theta);
+      text("EVAN IS OK I GUESS", w / 2.3, h / 2);
+    } else {
+      part++;
+    }
+  }
+
+  void moveToMiddle(Ship player) {
+    player.unbound = true;
+    player.x = moveTowards(player.x, w / 2);
+    player.y = moveTowards(player.y, h / 2);
+  }
+
+  float moveTowards(float num, float goal) {
+    if (num != goal) {
+      if (num < goal) {
+        num += w / 500;
+        inMiddle = false;
+      } else if (num > goal) {
+        num -= w / 500;
+        inMiddle = false;
+      }
+      if (num <= goal + 1 && num >= goal - 1) {
+        num = goal;
+        inMiddle = true;
+        prevMillis3 = millis();
+      }
+    }
+    return num;
+  }
+
   void shoot() {
     if (p1Shooting && !player1.dead && gameStart) {
       if (millis() - prevMillisP1 >= cooldown) {
@@ -88,7 +231,7 @@ class ShipGame
         prevMillisP1 = millis();
       }
     }
-    
+
     if (p2Shooting && !player2.dead) {
       if (millis() - prevMillisP2 >= cooldown) {
         bullets.add(new Bullet(player2.x - player2.shipW / 1.5, player2.y, 'l'));
@@ -96,36 +239,36 @@ class ShipGame
       }
     }
   }
-  
-  
-  
+
+
+
   void p1Shoot() {
     p1Shooting = true;
   }
-  
+
   void p1StopShoot() {
     p1Shooting = false;
   }
-  
+
   void p2Shoot() {
     p2Shooting = true;
   }
-  
+
   void p2StopShoot() {
     p2Shooting = false;
   }
-  
-  
-  
+
+
+
   void drawBullets() {
     for (int i = 0; i < bullets.size(); i++) {
       bullets.get(i).drawBullet();
-        
+
       float bx = bullets.get(i).x;
       float by = bullets.get(i).y;
       float bw = bullets.get(i).bulletW;
       float bh = bullets.get(i).bulletH;
-      
+
       if (bx + (bw / 2) < 0 || bx - (bw / 2) > w) {
         bullets.remove(i);
         i = 0;
@@ -133,49 +276,49 @@ class ShipGame
       if (player1.inHitBox(bx, by, bw, bh) && !player1.dead) {
         bullets.remove(i);
         i = 0;
-        
+
         player1.hit();
       }
-      
+
       if (player2.inHitBox(bx, by, bw, bh) && !player2.dead) {
         bullets.remove(i);
         i = 0;
-        
+
         player2.hit();
       }
     }
   }
-  
+
   void init() {
-    w = width; 
+    w = width;
     h = height;
     initP1();
     initP2();
     gameOver = false;
   }
-  
+
   void initP1() {
     player1.init(w, h, w / 4, h / 2);
     player1.setBorder(0, h, 0, w / 2);
   }
-  
+
   void initP2() {
     player2.init(w, h, w * 3 / 4, h / 2);
     player2.setBorder(0, h, w / 2, w);
   }
-  
+
   void p1ThrustOn(int dir) {
     player1.thrustOn(dir);
   }
-  
+
   void p1ThrustOff(int dir) {
     player1.thrustOff(dir);
   }
-  
+
   void p2ThrustOn(int dir) {
     player2.thrustOn(dir);
   }
-  
+
   void p2ThrustOff(int dir) {
     player2.thrustOff(dir);
   }

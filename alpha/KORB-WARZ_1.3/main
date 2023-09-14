@@ -41,7 +41,7 @@ byte row2, col2;
 
 
 void setup() {
-  size(800, 800);
+  size(500, 500);
   frameRate(60);
   
   ts.init();
@@ -76,15 +76,18 @@ void draw() {
     css.drawCharacterSelect();
   }
   
-  //println("Row 1: ", row1);
-  //println("Col 1: ", col1);
-  //println("Row 2: ", row2);
-  //println("Col 2: ", col2);
+  stroke(255);
+  strokeWeight(1);
+  /*
+  line(width / 2, height / 2 - 10, width / 2, height / 2 + 10);
+  line(width / 2 - 10, height / 2, width / 2 + 10, height / 2);
+  */
 }
 
 
 
 void keyPressed() {
+  //println(keyCode);
   
   // TITLE SCREEN // TITLE SCREEN //
   
@@ -167,53 +170,76 @@ void keyPressed() {
   if (page == 4 && pageReady) {
     
     // Player One
-    if (key == 'w') {
-      if (css.checkDir(1, 1, row1 - 1, col1 - 1)) {
-        row1--;
+    if (!css.p1Ready) {
+      if (key == 'w') {
+        if (css.checkDir(1, 1, row1 - 1, col1 - 1)) {
+          row1--;
+        }
+      }
+      if (key == 's') {
+        if (css.checkDir(1, 2, row1 - 1, col1 - 1)) {
+          row1++;
+        }
+      }
+      if (key == 'a') {
+        if (css.checkDir(1, 3, row1 - 1, col1 - 1)) {
+          col1--;
+        }
+      }
+      if (key == 'd') {
+        if (css.checkDir(1, 4, row1 - 1, col1 - 1)) {
+          col1++;
+        }
+      }
+    } else if (css.p1Ready) {
+      if (key == 't') {
+        css.lock1 = true;
       }
     }
-    if (key == 's') {
-      if (css.checkDir(1, 2, row1 - 1, col1 - 1)) {
-        row1++;
+    if (key == 'r' && (!css.lock1 || !css.lock2)) {
+      css.press(1);
+      
+      if (css.buttons1.get(10).isPressed && css.selected1 == 10) {
+        page = 1;
+        reset();
       }
-    }
-    if (key == 'a') {
-      if (css.checkDir(1, 3, row1 - 1, col1 - 1)) {
-        col1--;
-      }
-    }
-    if (key == 'd') {
-      if (css.checkDir(1, 4, row1 - 1, col1 - 1)) {
-        col1++;
-      }
-    }
-    if (key == 'r') {
-      css.press(css.buttons1);
     }
     
+    
     // Player Two
-    if (keyCode == 38) {
-      if (css.checkDir(2, 1, row2 - 1, col2 - 1)) {
-        row2--;
+    if (!css.p2Ready) {
+      if (keyCode == 38) {
+        if (css.checkDir(2, 1, row2 - 1, col2 - 1)) {
+          row2--;
+        }
+      }
+      if (keyCode == 40) {
+        if (css.checkDir(2, 2, row2 - 1, col2 - 1)) {
+          row2++;
+        }
+      }
+      if (keyCode == 37) {
+        if (css.checkDir(2, 3, row2 - 1, col2 - 1)) {
+          col2--;
+        }
+      }
+      if (keyCode == 39) {
+        if (css.checkDir(2, 4, row2 - 1, col2 - 1)) {
+          col2++;
+        }
+      }
+    } else if (css.p2Ready) {
+      if (keyCode == 46) {
+        css.lock2 = true;
       }
     }
-    if (keyCode == 40) {
-      if (css.checkDir(2, 2, row2 - 1, col2 - 1)) {
-        row2++;
+    if (keyCode == 47 && (!css.lock1 || !css.lock2)) {
+      css.press(2);
+      
+      if (css.buttons2.get(10).isPressed && css.selected2 == 10) {
+        page = 1;
+        reset();
       }
-    }
-    if (keyCode == 37) {
-      if (css.checkDir(2, 3, row2 - 1, col2 - 1)) {
-        col2--;
-      }
-    }
-    if (keyCode == 39) {
-      if (css.checkDir(2, 4, row2 - 1, col2 - 1)) {
-        col2++;
-      }
-    }
-    if (keyCode == 47) {
-      css.press(css.buttons2);
     }
   }
 }
@@ -244,7 +270,7 @@ void keyReleased() {
       if (key == 'w') {
         ng.p1ThrustOff(1);
       }
-      if (key == 's') {
+      if (key == 's') {x
         ng.p1ThrustOff(2);
       }
       if (key == 'a') {
@@ -293,6 +319,36 @@ void keyReleased() {
     if (key == 'r') {
       pageReady = true;
       reset();
+    }
+  } else if (page == 4 && pageReady) {
+    if (key == 'r') {
+      css.pressed1 = false;
+    }
+    
+    if (keyCode == 47) {
+      css.pressed2 = false;
+    }
+    if (key == 't') {
+      if (row1 < 6) {
+        css.lock1 = false;
+        if (css.charsSelected) {
+          page = 2;
+          
+          ng.player1.skin = color(css.skins[css.p1Skin]);
+          
+          
+          
+          ng.player2.skin = color(css.skins[css.p2Skin]);
+          
+          
+          
+          ng.start();
+          pageReady = true;
+        }
+      }
+    }
+    if (keyCode == 46) {
+      css.lock2 = false;
     }
   }
 }
